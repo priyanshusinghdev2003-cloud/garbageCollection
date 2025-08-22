@@ -26,7 +26,7 @@ body {
 }
 
 .game-display {
-  background-image: url("images/scenery.jpeg");
+  background-image: url("images/scenery.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   position: relative;
@@ -119,4 +119,5 @@ body {
   z-index: 1000;
   display: none; /* hidden initially */
 }
+
 
