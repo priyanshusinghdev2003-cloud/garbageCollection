@@ -57,6 +57,14 @@ function playGame() {
       offsetY = e.clientY - img.offsetTop;
     });
 
+    img.addEventListener("touchstart", function (e) {
+      isDragging = true;
+      currentImg = img;
+      let touch = e.touches[0];
+      offsetX = touch.clientX - img.offsetLeft;
+      offsetY = touch.clientY - img.offsetTop;
+    });
+
     gameDiv.appendChild(img);
     let randomDelay = Math.floor(Math.random() * 40 + 25);
     let fallInterval = setInterval(() => {
@@ -120,11 +128,25 @@ document.addEventListener("mousemove", function (e) {
   }
 });
 
+
+document.addEventListener("touchmove", function (e) {
+  if (!isDragging || !currentImg) return;
+  let touch = e.touches[0];
+  dragImage(touch.clientX, touch.clientY);
+}, { passive: false });
+
+
 // Stop dragging
 document.addEventListener("mouseup", function () {
   isDragging = false;
   currentImg = null;
 });
+
+document.addEventListener("touchend", function () {
+  isDragging = false;
+  currentImg = null;
+});
+
 
 function endGame() {
   let gameDiv = document.querySelector(".game-display");
