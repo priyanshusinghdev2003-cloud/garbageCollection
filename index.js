@@ -50,6 +50,7 @@ function playGame() {
     img.style.left = Math.random() * (window.innerWidth - 100) + "px";
     img.style.transition = "top 0.05s linear, left 0.05s linear";
 
+    // 🖱️ Mouse drag start
     img.addEventListener("mousedown", function (e) {
       isDragging = true;
       currentImg = img;
@@ -57,6 +58,7 @@ function playGame() {
       offsetY = e.clientY - img.offsetTop;
     });
 
+    // 📱 Touch drag start
     img.addEventListener("touchstart", function (e) {
       isDragging = true;
       currentImg = img;
@@ -66,6 +68,7 @@ function playGame() {
     });
 
     gameDiv.appendChild(img);
+
     let randomDelay = Math.floor(Math.random() * 40 + 25);
     let fallInterval = setInterval(() => {
       if (!isDragging || currentImg !== img) {
@@ -86,10 +89,24 @@ function playGame() {
 
   for (let i = 0; i < 5; i++) spawnGarbage();
 }
+
+// 🖱️ Mouse move
 document.addEventListener("mousemove", function (e) {
   if (!isDragging || !currentImg) return;
-  currentImg.style.left = e.clientX - offsetX + "px";
-  currentImg.style.top = e.clientY - offsetY + "px";
+  dragImage(e.clientX, e.clientY);
+});
+
+// 📱 Touch move
+document.addEventListener("touchmove", function (e) {
+  if (!isDragging || !currentImg) return;
+  let touch = e.touches[0];
+  dragImage(touch.clientX, touch.clientY);
+}, { passive: false });
+
+// Common drag logic
+function dragImage(clientX, clientY) {
+  currentImg.style.left = clientX - offsetX + "px";
+  currentImg.style.top = clientY - offsetY + "px";
   let dustbinRect = dustbinImage.getBoundingClientRect();
   let imgRect = currentImg.getBoundingClientRect();
 
@@ -119,34 +136,26 @@ document.addEventListener("mousemove", function (e) {
 
       setTimeout(() => {
         currentImg.remove();
-        spawnGarbage();
+        playGame();
       }, 500);
     }
   } else {
     dustbinImage.src = "images/dustbinOpen.png";
     dustbinImage.style.transform = "translateX(-50%) scale(1)";
   }
-});
+}
 
-
-document.addEventListener("touchmove", function (e) {
-  if (!isDragging || !currentImg) return;
-  let touch = e.touches[0];
-  dragImage(touch.clientX, touch.clientY);
-}, { passive: false });
-
-
-// Stop dragging
+// 🖱️ Mouse up
 document.addEventListener("mouseup", function () {
   isDragging = false;
   currentImg = null;
 });
 
+// 📱 Touch end
 document.addEventListener("touchend", function () {
   isDragging = false;
   currentImg = null;
 });
-
 
 function endGame() {
   let gameDiv = document.querySelector(".game-display");
